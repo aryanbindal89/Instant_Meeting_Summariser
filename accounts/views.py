@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from meetings.models import Meeting
 
 
 def register_view(request):
@@ -58,7 +59,10 @@ def logout_view(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, "accounts/dashboard.html")
-def dashboard_view(request):
-    
-    return render(request, "accounts/dashboard.html")
+    meetings = Meeting.objects.filter(user=request.user).order_by("-created_at")
+
+    return render(
+        request,
+        "accounts/dashboard.html",
+        {"meetings": meetings}
+    )

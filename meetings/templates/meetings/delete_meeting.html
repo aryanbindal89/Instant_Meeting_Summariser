@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Meeting</title>
+</head>
+<body>
+
+    <h1>Delete Meeting</h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ meeting.title }}</strong>?
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button type="submit">
+            Yes, Delete Meeting
+        </button>
+    </form>
+
+    <br>
+
+    <a href="{% url 'meeting_detail' meeting.id %}">
+        Cancel
+    </a>
+
+</body>
+</html>
