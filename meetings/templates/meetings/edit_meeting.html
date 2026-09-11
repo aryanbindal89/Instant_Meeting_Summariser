@@ -7,7 +7,7 @@
 
     <h1>Edit Meeting</h1>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <input
@@ -28,7 +28,33 @@
 
         <br><br>
 
-        <button type="submit">Save Changes</button>
+        {% if meeting.audio %}
+            <h3>Current Audio</h3>
+
+            <audio controls>
+                <source src="{{ meeting.audio.url }}">
+                Your browser does not support the audio player.
+            </audio>
+
+            <br><br>
+        {% endif %}
+
+        <label for="audio">Replace Meeting Audio:</label>
+
+        <br>
+
+        <input
+            type="file"
+            name="audio"
+            id="audio"
+            accept="audio/*"
+        >
+
+        <br><br>
+
+        <button type="submit">
+            Save Changes
+        </button>
     </form>
 
     <br>
@@ -39,3 +65,4 @@
 
 </body>
 </html>
+

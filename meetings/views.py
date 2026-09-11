@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Meeting
@@ -8,16 +9,21 @@ def create_meeting(request):
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
+        audio = request.FILES.get("audio")
 
         Meeting.objects.create(
             user=request.user,
             title=title,
-            description=description
+            description=description,
+            audio=audio
         )
 
         return redirect("dashboard")
 
-    return render(request, "meetings/create_meeting.html")
+    return render(
+        request,
+        "meetings/create_meeting.html"
+    )
 
 
 @login_required
@@ -46,9 +52,18 @@ def edit_meeting(request, meeting_id):
     if request.method == "POST":
         meeting.title = request.POST.get("title")
         meeting.description = request.POST.get("description")
+
+        audio = request.FILES.get("audio")
+
+        if audio:
+            meeting.audio = audio
+
         meeting.save()
 
-        return redirect("meeting_detail", meeting_id=meeting.id)
+        return redirect(
+            "meeting_detail",
+            meeting_id=meeting.id
+        )
 
     return render(
         request,

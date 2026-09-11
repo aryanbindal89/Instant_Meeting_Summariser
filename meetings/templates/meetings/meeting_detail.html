@@ -9,6 +9,15 @@
 
     <p>{{ meeting.description }}</p>
 
+    {% if meeting.audio %}
+    <h3>Meeting Audio</h3>
+
+    <audio controls>
+        <source src="{{ meeting.audio.url }}">
+        Your browser does not support the audio player.
+    </audio>
+{% endif %}
+
     <p>
         <strong>Created:</strong>
         {{ meeting.created_at }}

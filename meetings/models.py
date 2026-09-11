@@ -8,6 +8,12 @@ class Meeting(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
+    audio = models.FileField(
+        upload_to="meetings/audio/",
+        blank=True,
+        null=True
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
