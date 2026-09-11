@@ -18,6 +18,27 @@
     </audio>
 {% endif %}
 
+{% if meeting.audio %}
+    <h3>Meeting Audio</h3>
+
+    <audio controls>
+        <source src="{{ meeting.audio.url }}">
+        Your browser does not support the audio player.
+    </audio>
+
+    <br><br>
+
+    <a href="{% url 'transcribe_meeting' meeting.id %}">
+        Transcribe Audio
+    </a>
+{% endif %}
+
+{% if meeting.transcript %}
+    <h3>Transcript</h3>
+
+    <p>{{ meeting.transcript }}</p>
+{% endif %}
+
     <p>
         <strong>Created:</strong>
         {{ meeting.created_at }}

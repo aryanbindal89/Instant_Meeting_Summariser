@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Meeting
-
+from .services import transcribe_audio
 
 @login_required
 def create_meeting(request):
@@ -88,4 +88,28 @@ def delete_meeting(request, meeting_id):
         request,
         "meetings/delete_meeting.html",
         {"meeting": meeting}
+    )
+
+
+@login_required
+def transcribe_meeting(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting,
+        id=meeting_id,
+        user=request.user
+    )
+
+    if not meeting.audio:
+        return redirect("meeting_detail", meeting_id=meeting.id)
+
+    transcript = transcribe_audio(
+        meeting.audio.path
+    )
+
+    meeting.transcript = transcript
+    meeting.save()
+
+    return redirect(
+        "meeting_detail",
+        meeting_id=meeting.id
     )
