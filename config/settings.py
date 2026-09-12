@@ -1,4 +1,3 @@
-
 """
 Django settings for config project.
 """
@@ -34,17 +33,21 @@ DEBUG = os.getenv(
 ).lower() == "true"
 
 
+# --------------------------------------------------
+# ALLOWED HOSTS
+# --------------------------------------------------
+
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv(
-        "ALLOWED_HOSTS",
-        "localhost,127.0.0.1",
-    ).split(",")
-    if host.strip()
+    "instant-meeting-summariser.onrender.com",
+    "localhost",
+    "127.0.0.1",
 ]
 
 
-# Render HTTPS domain
+# --------------------------------------------------
+# CSRF TRUSTED ORIGINS
+# --------------------------------------------------
+
 CSRF_TRUSTED_ORIGINS = [
     "https://instant-meeting-summariser.onrender.com",
 ]
@@ -133,8 +136,9 @@ TEMPLATES = [
 # DATABASE
 # --------------------------------------------------
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
+DATABASE_URL = os.getenv(
+    "DATABASE_URL"
+)
 
 if DATABASE_URL:
     DATABASES = {
