@@ -44,11 +44,19 @@ ALLOWED_HOSTS = [
 ]
 
 
+# Render HTTPS domain
+CSRF_TRUSTED_ORIGINS = [
+    "https://instant-meeting-summariser.onrender.com",
+]
+
+
 # --------------------------------------------------
 # GEMINI API
 # --------------------------------------------------
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv(
+    "GEMINI_API_KEY"
+)
 
 
 # --------------------------------------------------
@@ -127,6 +135,7 @@ TEMPLATES = [
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+
 if DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.parse(
@@ -135,6 +144,7 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
+
 else:
     DATABASES = {
         "default": {
