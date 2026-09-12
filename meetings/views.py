@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Meeting
-from .services import transcribe_audio
+from .services import transcribe_audio, analyze_meeting
 
 @login_required
 def create_meeting(request):
@@ -107,6 +107,64 @@ def transcribe_meeting(request, meeting_id):
     )
 
     meeting.transcript = transcript
+    meeting.save()
+
+    return redirect(
+        "meeting_detail",
+        meeting_id=meeting.id
+    )
+
+@login_required
+def analyze_meeting_view(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting,
+        id=meeting_id,
+        user=request.user
+    )
+
+    if not meeting.transcript:
+        return redirect(
+            "meeting_detail",
+            meeting_id=meeting.id
+        )
+
+    analysis = analyze_meeting(
+        meeting.transcript
+    )
+
+    # Split Gemini response into sections
+    sections = {
+        "summary": "",
+        "key_points": "",
+        "action_items": "",
+        "decisions": ""
+    }
+
+    current_section = None
+
+    for line in analysis.splitlines():
+        line = line.strip()
+
+        if line == "SUMMARY:":
+            current_section = "summary"
+
+        elif line == "KEY POINTS:":
+            current_section = "key_points"
+
+        elif line == "ACTION ITEMS:":
+            current_section = "action_items"
+
+        elif line == "DECISIONS:":
+            current_section = "decisions"
+
+        elif current_section:
+            sections[current_section] += line + "\n"
+
+    meeting.summary = sections["summary"].strip()
+    meeting.key_points = sections["key_points"].strip()
+    meeting.action_items = sections["action_items"].strip()
+    meeting.decisions = sections["decisions"].strip()
+
     meeting.save()
 
     return redirect(

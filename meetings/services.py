@@ -33,3 +33,45 @@ def transcribe_audio(audio_file):
                 time.sleep(5)
             else:
                 raise
+
+
+def analyze_meeting(transcript):
+    prompt = f"""
+You are an AI meeting assistant.
+
+Analyze the following meeting transcript and return:
+
+1. Summary
+2. Key Points
+3. Action Items
+4. Decisions
+
+Keep the information clear, concise, and useful.
+
+Meeting Transcript:
+{transcript}
+
+Format your response exactly like this:
+
+SUMMARY:
+<summary>
+
+KEY POINTS:
+- point 1
+- point 2
+
+ACTION ITEMS:
+- action item 1
+- action item 2
+
+DECISIONS:
+- decision 1
+- decision 2
+"""
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+
+    return response.text

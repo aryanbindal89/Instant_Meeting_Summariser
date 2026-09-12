@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -15,8 +14,12 @@ class Meeting(models.Model):
         null=True
     )
 
-
     transcript = models.TextField(blank=True)
+
+    summary = models.TextField(blank=True)
+    key_points = models.TextField(blank=True)
+    action_items = models.TextField(blank=True)
+    decisions = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

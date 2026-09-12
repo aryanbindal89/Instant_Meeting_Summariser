@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,36 +10,59 @@
 
     <p>{{ meeting.description }}</p>
 
+
+    <!-- Meeting Audio -->
     {% if meeting.audio %}
-    <h3>Meeting Audio</h3>
+        <h3>Meeting Audio</h3>
 
-    <audio controls>
-        <source src="{{ meeting.audio.url }}">
-        Your browser does not support the audio player.
-    </audio>
-{% endif %}
+        <audio controls>
+            <source src="{{ meeting.audio.url }}">
+            Your browser does not support the audio player.
+        </audio>
 
-{% if meeting.audio %}
-    <h3>Meeting Audio</h3>
+        <br><br>
 
-    <audio controls>
-        <source src="{{ meeting.audio.url }}">
-        Your browser does not support the audio player.
-    </audio>
+        <a href="{% url 'transcribe_meeting' meeting.id %}">
+            Transcribe Audio
+        </a>
+    {% endif %}
 
-    <br><br>
 
-    <a href="{% url 'transcribe_meeting' meeting.id %}">
-        Transcribe Audio
-    </a>
-{% endif %}
+    <!-- Transcript -->
+    {% if meeting.transcript %}
+        <h3>Transcript</h3>
 
-{% if meeting.transcript %}
-    <h3>Transcript</h3>
+        <p>{{ meeting.transcript }}</p>
 
-    <p>{{ meeting.transcript }}</p>
-{% endif %}
+        <br>
 
+        <a href="{% url 'analyze_meeting' meeting.id %}">
+            <button type="button">Analyze Meeting</button>
+        </a>
+    {% endif %}
+
+
+    <!-- AI Analysis -->
+    {% if meeting.summary %}
+        <hr>
+
+        <h2>AI Meeting Analysis</h2>
+
+        <h3>Summary</h3>
+        <p>{{ meeting.summary }}</p>
+
+        <h3>Key Points</h3>
+        <p>{{ meeting.key_points|linebreaks }}</p>
+
+        <h3>Action Items</h3>
+        <p>{{ meeting.action_items|linebreaks }}</p>
+
+        <h3>Decisions</h3>
+        <p>{{ meeting.decisions|linebreaks }}</p>
+    {% endif %}
+
+
+    <!-- Meeting Information -->
     <p>
         <strong>Created:</strong>
         {{ meeting.created_at }}
@@ -48,6 +72,7 @@
         <strong>Last Updated:</strong>
         {{ meeting.updated_at }}
     </p>
+
 
     <br>
 
@@ -69,3 +94,4 @@
 
 </body>
 </html>
+```

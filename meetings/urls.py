@@ -11,4 +11,9 @@ urlpatterns = [
     views.transcribe_meeting,
     name="transcribe_meeting"
 ),
+path(
+    "<int:meeting_id>/analyze/",
+    views.analyze_meeting_view,
+    name="analyze_meeting"
+),
 ]
