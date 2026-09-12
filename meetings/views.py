@@ -1,20 +1,27 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+
 from .models import Meeting
-from .services import transcribe_audio, analyze_meeting, ask_meeting
+from .services import (
+    transcribe_audio,
+    analyze_meeting,
+    ask_meeting
+)
+
 
 @login_required
 def create_meeting(request):
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
+        tags = request.POST.get("tags", "").strip()
         audio = request.FILES.get("audio")
 
         Meeting.objects.create(
             user=request.user,
             title=title,
             description=description,
+            tags=tags,
             audio=audio
         )
 
@@ -52,6 +59,7 @@ def edit_meeting(request, meeting_id):
     if request.method == "POST":
         meeting.title = request.POST.get("title")
         meeting.description = request.POST.get("description")
+        meeting.tags = request.POST.get("tags", "").strip()
 
         audio = request.FILES.get("audio")
 
@@ -100,7 +108,10 @@ def transcribe_meeting(request, meeting_id):
     )
 
     if not meeting.audio:
-        return redirect("meeting_detail", meeting_id=meeting.id)
+        return redirect(
+            "meeting_detail",
+            meeting_id=meeting.id
+        )
 
     transcript = transcribe_audio(
         meeting.audio.path
@@ -113,6 +124,7 @@ def transcribe_meeting(request, meeting_id):
         "meeting_detail",
         meeting_id=meeting.id
     )
+
 
 @login_required
 def analyze_meeting_view(request, meeting_id):
@@ -172,6 +184,7 @@ def analyze_meeting_view(request, meeting_id):
         meeting_id=meeting.id
     )
 
+
 @login_required
 def ask_meeting_view(request, meeting_id):
     meeting = get_object_or_404(
@@ -187,7 +200,10 @@ def ask_meeting_view(request, meeting_id):
         )
 
     if request.method == "POST":
-        question = request.POST.get("question", "").strip()
+        question = request.POST.get(
+            "question",
+            ""
+        ).strip()
 
         if question:
             answer = ask_meeting(
@@ -206,6 +222,7 @@ def ask_meeting_view(request, meeting_id):
         "meeting_detail",
         meeting_id=meeting.id
     )
+
 
 @login_required
 def toggle_important(request, meeting_id):

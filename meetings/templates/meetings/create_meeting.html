@@ -8,19 +8,10 @@
     <h1>Create New Meeting</h1>
 
     <form method="POST" enctype="multipart/form-data">
-        <label for="audio">Meeting Audio:</label>
-<br>
 
-<input
-    type="file"
-    name="audio"
-    id="audio"
-    accept="audio/*"
->
-
-<br><br>
         {% csrf_token %}
 
+        <!-- Meeting Title -->
         <input
             type="text"
             name="title"
@@ -30,6 +21,7 @@
 
         <br><br>
 
+        <!-- Meeting Description -->
         <textarea
             name="description"
             placeholder="Meeting description"
@@ -38,12 +30,40 @@
 
         <br><br>
 
-        <button type="submit">Create Meeting</button>
+        <!-- Meeting Tags -->
+        <input
+            type="text"
+            name="tags"
+            placeholder="Tags (e.g. college, project, important)"
+        >
+
+        <br><br>
+
+        <!-- Meeting Audio -->
+        <label for="audio">Meeting Audio:</label>
+
+        <br>
+
+        <input
+            type="file"
+            name="audio"
+            id="audio"
+            accept="audio/*"
+        >
+
+        <br><br>
+
+        <button type="submit">
+            Create Meeting
+        </button>
+
     </form>
 
     <br>
 
-    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+    <a href="{% url 'dashboard' %}">
+        Back to Dashboard
+    </a>
 
 </body>
 </html>

@@ -8,8 +8,10 @@
     <h1>Edit Meeting</h1>
 
     <form method="POST" enctype="multipart/form-data">
+
         {% csrf_token %}
 
+        <!-- Meeting Title -->
         <input
             type="text"
             name="title"
@@ -20,6 +22,7 @@
 
         <br><br>
 
+        <!-- Meeting Description -->
         <textarea
             name="description"
             rows="5"
@@ -28,6 +31,22 @@
 
         <br><br>
 
+        <!-- Meeting Tags -->
+        <label for="tags">Meeting Tags:</label>
+
+        <br>
+
+        <input
+            type="text"
+            name="tags"
+            id="tags"
+            value="{{ meeting.tags }}"
+            placeholder="e.g. college, project, client"
+        >
+
+        <br><br>
+
+        <!-- Current Audio -->
         {% if meeting.audio %}
             <h3>Current Audio</h3>
 
@@ -39,6 +58,7 @@
             <br><br>
         {% endif %}
 
+        <!-- Replace Audio -->
         <label for="audio">Replace Meeting Audio:</label>
 
         <br>
@@ -55,6 +75,7 @@
         <button type="submit">
             Save Changes
         </button>
+
     </form>
 
     <br>
@@ -65,4 +86,3 @@
 
 </body>
 </html>
-

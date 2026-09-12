@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,6 +21,15 @@
     </form>
 
     <p>{{ meeting.description }}</p>
+
+
+    <!-- Meeting Tags -->
+    {% if meeting.tags %}
+        <p>
+            <strong>🏷️ Tags:</strong>
+            {{ meeting.tags }}
+        </p>
+    {% endif %}
 
 
     <!-- Meeting Audio -->
