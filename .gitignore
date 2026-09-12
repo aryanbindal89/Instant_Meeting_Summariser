@@ -8,3 +8,10 @@ media/
 staticfiles/
 .vscode/
 .idea/
+.venv/
+__pycache__/
+*.pyc
+.env
+staticfiles/
+media/
+db.sqlite3
