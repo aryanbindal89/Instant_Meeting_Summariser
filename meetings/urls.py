@@ -16,4 +16,6 @@ path(
     views.analyze_meeting_view,
     name="analyze_meeting"
 ),
+
+path("<int:meeting_id>/ask/", views.ask_meeting_view, name="ask_meeting"),
 ]

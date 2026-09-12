@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,6 +39,50 @@
         <a href="{% url 'analyze_meeting' meeting.id %}">
             <button type="button">Analyze Meeting</button>
         </a>
+
+
+        <!-- Ask My Meeting -->
+        <hr>
+
+        <h2>Ask My Meeting</h2>
+
+        <form method="POST" action="{% url 'ask_meeting' meeting.id %}">
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="question"
+                placeholder="Ask something about this meeting..."
+                required
+            >
+
+            <button type="submit">
+                Ask
+            </button>
+        </form>
+
+
+        <!-- Conversation History -->
+        {% if meeting.chat_history %}
+            <h3>Conversation</h3>
+
+            {% for chat in meeting.chat_history %}
+
+                <p>
+                    <strong>You:</strong>
+                    {{ chat.question }}
+                </p>
+
+                <p>
+                    <strong>AI:</strong>
+                    {{ chat.answer|linebreaks }}
+                </p>
+
+                <hr>
+
+            {% endfor %}
+        {% endif %}
+
     {% endif %}
 
 
@@ -94,4 +138,3 @@
 
 </body>
 </html>
-```

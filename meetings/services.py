@@ -75,3 +75,29 @@ DECISIONS:
     )
 
     return response.text
+
+
+def ask_meeting(transcript, question):
+    prompt = f"""
+You are an AI meeting assistant.
+
+Answer the user's question using ONLY the meeting transcript below.
+
+Do not use outside knowledge.
+
+If the answer is not present in the transcript, say:
+"I couldn't find that information in the meeting transcript."
+
+Meeting Transcript:
+{transcript}
+
+User Question:
+{question}
+"""
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+
+    return response.text

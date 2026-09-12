@@ -21,6 +21,11 @@ class Meeting(models.Model):
     action_items = models.TextField(blank=True)
     decisions = models.TextField(blank=True)
 
+    chat_history = models.JSONField(
+        default=list,
+        blank=True
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

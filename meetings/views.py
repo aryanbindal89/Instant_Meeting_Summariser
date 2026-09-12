@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Meeting
-from .services import transcribe_audio, analyze_meeting
+from .services import transcribe_audio, analyze_meeting, ask_meeting
 
 @login_required
 def create_meeting(request):
@@ -166,6 +166,41 @@ def analyze_meeting_view(request, meeting_id):
     meeting.decisions = sections["decisions"].strip()
 
     meeting.save()
+
+    return redirect(
+        "meeting_detail",
+        meeting_id=meeting.id
+    )
+
+@login_required
+def ask_meeting_view(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting,
+        id=meeting_id,
+        user=request.user
+    )
+
+    if not meeting.transcript:
+        return redirect(
+            "meeting_detail",
+            meeting_id=meeting.id
+        )
+
+    if request.method == "POST":
+        question = request.POST.get("question", "").strip()
+
+        if question:
+            answer = ask_meeting(
+                meeting.transcript,
+                question
+            )
+
+            meeting.chat_history.append({
+                "question": question,
+                "answer": answer
+            })
+
+            meeting.save()
 
     return redirect(
         "meeting_detail",
