@@ -6,8 +6,8 @@ Django settings for config project.
 from pathlib import Path
 import os
 
-from dotenv import load_dotenv
 import dj_database_url
+from dotenv import load_dotenv
 
 
 # --------------------------------------------------
@@ -25,25 +25,28 @@ load_dotenv()
 
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
-    "django-insecure-development-only-key"
+    "django-insecure-development-only-key",
 )
 
 DEBUG = os.getenv(
     "DEBUG",
-    "True"
+    "True",
 ).lower() == "true"
+
 
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "ALLOWED_HOSTS",
-        "localhost,127.0.0.1"
+        "localhost,127.0.0.1",
     ).split(",")
     if host.strip()
 ]
 
 
-# Gemini API
+# --------------------------------------------------
+# GEMINI API
+# --------------------------------------------------
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -122,13 +125,23 @@ TEMPLATES = [
 # DATABASE
 # --------------------------------------------------
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # --------------------------------------------------
@@ -216,6 +229,16 @@ LOGIN_URL = "/accounts/login/"
 
 EMAIL_BACKEND = (
     "django.core.mail.backends.console.EmailBackend"
+)
+
+
+# --------------------------------------------------
+# SECURITY
+# --------------------------------------------------
+
+SECURE_PROXY_SSL_HEADER = (
+    "HTTP_X_FORWARDED_PROTO",
+    "https",
 )
 
 
