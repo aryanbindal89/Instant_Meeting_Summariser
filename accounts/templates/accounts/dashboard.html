@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,6 +7,19 @@
 <body>
 
     <h1>Welcome, {{ request.user.username }}</h1>
+
+    <!-- Dashboard Navigation -->
+    <p>
+        <a href="{% url 'dashboard' %}">
+            📋 All Meetings
+        </a>
+        |
+        <a href="{% url 'important_meetings' %}">
+            ⭐ Important Meetings
+        </a>
+    </p>
+
+    <hr>
 
     <h2>Meeting Overview</h2>
 
@@ -34,7 +48,7 @@
     <h2>My Meetings</h2>
 
     <a href="{% url 'create_meeting' %}">
-        Create New Meeting
+        ➕ Create New Meeting
     </a>
 
     <br><br>
@@ -44,13 +58,20 @@
         {% for meeting in meetings %}
 
             <div>
+
                 <h3>
                     <a href="{% url 'meeting_detail' meeting.id %}">
                         {{ meeting.title }}
                     </a>
+
+                    {% if meeting.is_important %}
+                        ⭐
+                    {% endif %}
                 </h3>
 
-                <p>{{ meeting.description }}</p>
+                <p>
+                    {{ meeting.description }}
+                </p>
 
                 <p>
                     Created: {{ meeting.created_at }}
@@ -67,6 +88,7 @@
                 {% if meeting.summary %}
                     <p>🧠 AI analysis available</p>
                 {% endif %}
+
             </div>
 
             <hr>
@@ -75,14 +97,14 @@
 
     {% else %}
 
-        <p>No meetings yet.</p>
+        <p>No meetings found.</p>
 
     {% endif %}
 
     <br>
 
     <a href="{% url 'logout' %}">
-        Logout
+        🚪 Logout
     </a>
 
 </body>

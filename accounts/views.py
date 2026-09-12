@@ -56,8 +56,11 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+
 @login_required
 def dashboard_view(request):
+
     meetings = Meeting.objects.filter(
         user=request.user
     ).order_by("-created_at")
@@ -73,6 +76,49 @@ def dashboard_view(request):
     ).count()
 
     meetings_with_analysis = meetings.exclude(
+        summary=""
+    ).count()
+
+    return render(
+        request,
+        "accounts/dashboard.html",
+        {
+            "meetings": meetings,
+            "total_meetings": total_meetings,
+            "meetings_with_audio": meetings_with_audio,
+            "meetings_with_transcript": meetings_with_transcript,
+            "meetings_with_analysis": meetings_with_analysis,
+        }
+    )
+
+
+@login_required
+def important_meetings_view(request):
+
+    meetings = Meeting.objects.filter(
+        user=request.user,
+        is_important=True
+    ).order_by("-created_at")
+
+    total_meetings = Meeting.objects.filter(
+        user=request.user
+    ).count()
+
+    meetings_with_audio = Meeting.objects.filter(
+        user=request.user
+    ).exclude(
+        audio=""
+    ).count()
+
+    meetings_with_transcript = Meeting.objects.filter(
+        user=request.user
+    ).exclude(
+        transcript=""
+    ).count()
+
+    meetings_with_analysis = Meeting.objects.filter(
+        user=request.user
+    ).exclude(
         summary=""
     ).count()
 

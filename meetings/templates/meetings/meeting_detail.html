@@ -8,6 +8,19 @@
 
     <h1>{{ meeting.title }}</h1>
 
+    <!-- Important Meeting -->
+    <form method="POST" action="{% url 'toggle_important' meeting.id %}">
+        {% csrf_token %}
+
+        <button type="submit">
+            {% if meeting.is_important %}
+                ⭐ Remove from Important
+            {% else %}
+                ☆ Mark as Important
+            {% endif %}
+        </button>
+    </form>
+
     <p>{{ meeting.description }}</p>
 
 

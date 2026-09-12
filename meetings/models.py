@@ -21,6 +21,8 @@ class Meeting(models.Model):
     action_items = models.TextField(blank=True)
     decisions = models.TextField(blank=True)
 
+    is_important = models.BooleanField(default=False)
+
     chat_history = models.JSONField(
         default=list,
         blank=True

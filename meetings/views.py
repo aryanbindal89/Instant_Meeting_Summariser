@@ -206,3 +206,19 @@ def ask_meeting_view(request, meeting_id):
         "meeting_detail",
         meeting_id=meeting.id
     )
+
+@login_required
+def toggle_important(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting,
+        id=meeting_id,
+        user=request.user
+    )
+
+    meeting.is_important = not meeting.is_important
+    meeting.save()
+
+    return redirect(
+        "meeting_detail",
+        meeting_id=meeting.id
+    )

@@ -18,4 +18,10 @@ path(
 ),
 
 path("<int:meeting_id>/ask/", views.ask_meeting_view, name="ask_meeting"),
+
+path(
+    "<int:meeting_id>/toggle-important/",
+    views.toggle_important,
+    name="toggle_important"
+),
 ]
