@@ -1,35 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard | Instant Meeting Summariser</title>
+    <title>Dashboard</title>
 </head>
 <body>
 
-    <h1>Welcome, {{ request.user.username }}! 👋</h1>
+    <h1>Welcome, {{ request.user.username }}</h1>
 
-    <p>This is your meeting dashboard.</p>
+    <h2>Meeting Overview</h2>
 
-    <a href="{% url 'logout' %}">Logout</a>
-    <h2>Your Meetings</h2>
+    <p>
+        <strong>Total Meetings:</strong>
+        {{ total_meetings }}
+    </p>
 
-{% if meetings %}
-    {% for meeting in meetings %}
-        <div>
-            <h3>
-    <a href="{% url 'meeting_detail' meeting.id %}">
-        {{ meeting.title }}
+    <p>
+        <strong>Meetings with Audio:</strong>
+        {{ meetings_with_audio }}
+    </p>
+
+    <p>
+        <strong>Meetings with Transcript:</strong>
+        {{ meetings_with_transcript }}
+    </p>
+
+    <p>
+        <strong>Meetings with AI Analysis:</strong>
+        {{ meetings_with_analysis }}
+    </p>
+
+    <hr>
+
+    <h2>My Meetings</h2>
+
+    <a href="{% url 'create_meeting' %}">
+        Create New Meeting
     </a>
-</h3>
-            <p>{{ meeting.description }}</p>
-            <small>{{ meeting.created_at }}</small>
-        </div>
-        <hr>
-    {% endfor %}
-{% else %}
-    <p>You haven't created any meetings yet.</p>
-{% endif %}
 
-<a href="{% url 'create_meeting' %}">Create New Meeting</a>
+    <br><br>
+
+    {% if meetings %}
+
+        {% for meeting in meetings %}
+
+            <div>
+                <h3>
+                    <a href="{% url 'meeting_detail' meeting.id %}">
+                        {{ meeting.title }}
+                    </a>
+                </h3>
+
+                <p>{{ meeting.description }}</p>
+
+                <p>
+                    Created: {{ meeting.created_at }}
+                </p>
+
+                {% if meeting.audio %}
+                    <p>🎵 Audio uploaded</p>
+                {% endif %}
+
+                {% if meeting.transcript %}
+                    <p>📝 Transcript available</p>
+                {% endif %}
+
+                {% if meeting.summary %}
+                    <p>🧠 AI analysis available</p>
+                {% endif %}
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No meetings yet.</p>
+
+    {% endif %}
+
+    <br>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
 
 </body>
 </html>
