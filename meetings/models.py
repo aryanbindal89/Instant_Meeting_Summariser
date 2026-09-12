@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -39,3 +38,34 @@ class Meeting(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ActionItem(models.Model):
+    meeting = models.ForeignKey(
+        Meeting,
+        on_delete=models.CASCADE,
+        related_name="structured_action_items"
+    )
+
+    task = models.CharField(max_length=300)
+
+    assignee = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    due_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    completed = models.BooleanField(
+        default=False
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.task

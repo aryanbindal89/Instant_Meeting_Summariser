@@ -1,161 +1,296 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <title>{{ meeting.title }}</title>
+
+```
+<style>
+    .action-item {
+        margin: 10px 0;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .action-item.completed {
+        background-color: #f0f0f0;
+    }
+
+    .action-item.completed .task {
+        text-decoration: line-through;
+        color: #777;
+    }
+
+    .action-item form {
+        display: inline;
+    }
+
+    .action-item button {
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+    .meta {
+        color: #666;
+        font-size: 14px;
+    }
+</style>
+```
+
 </head>
+
 <body>
 
-    <h1>{{ meeting.title }}</h1>
-
-    <!-- Important Meeting -->
-    <form method="POST" action="{% url 'toggle_important' meeting.id %}">
-        {% csrf_token %}
-
-        <button type="submit">
-            {% if meeting.is_important %}
-                ⭐ Remove from Important
-            {% else %}
-                ☆ Mark as Important
-            {% endif %}
-        </button>
-    </form>
-
-    <p>{{ meeting.description }}</p>
+```
+<h1>{{ meeting.title }}</h1>
 
 
-    <!-- Meeting Tags -->
-    {% if meeting.tags %}
-        <p>
-            <strong>🏷️ Tags:</strong>
-            {{ meeting.tags }}
-        </p>
-    {% endif %}
+<!-- Important Meeting -->
+<form method="POST" action="{% url 'toggle_important' meeting.id %}">
+    {% csrf_token %}
 
-
-    <!-- Meeting Audio -->
-    {% if meeting.audio %}
-        <h3>Meeting Audio</h3>
-
-        <audio controls>
-            <source src="{{ meeting.audio.url }}">
-            Your browser does not support the audio player.
-        </audio>
-
-        <br><br>
-
-        <a href="{% url 'transcribe_meeting' meeting.id %}">
-            Transcribe Audio
-        </a>
-    {% endif %}
-
-
-    <!-- Transcript -->
-    {% if meeting.transcript %}
-        <h3>Transcript</h3>
-
-        <p>{{ meeting.transcript }}</p>
-
-        <br>
-
-        <a href="{% url 'analyze_meeting' meeting.id %}">
-            <button type="button">Analyze Meeting</button>
-        </a>
-
-
-        <!-- Ask My Meeting -->
-        <hr>
-
-        <h2>Ask My Meeting</h2>
-
-        <form method="POST" action="{% url 'ask_meeting' meeting.id %}">
-            {% csrf_token %}
-
-            <input
-                type="text"
-                name="question"
-                placeholder="Ask something about this meeting..."
-                required
-            >
-
-            <button type="submit">
-                Ask
-            </button>
-        </form>
-
-
-        <!-- Conversation History -->
-        {% if meeting.chat_history %}
-            <h3>Conversation</h3>
-
-            {% for chat in meeting.chat_history %}
-
-                <p>
-                    <strong>You:</strong>
-                    {{ chat.question }}
-                </p>
-
-                <p>
-                    <strong>AI:</strong>
-                    {{ chat.answer|linebreaks }}
-                </p>
-
-                <hr>
-
-            {% endfor %}
+    <button type="submit">
+        {% if meeting.is_important %}
+            ⭐ Remove from Important
+        {% else %}
+            ☆ Mark as Important
         {% endif %}
-
-    {% endif %}
-
-
-    <!-- AI Analysis -->
-    {% if meeting.summary %}
-        <hr>
-
-        <h2>AI Meeting Analysis</h2>
-
-        <h3>Summary</h3>
-        <p>{{ meeting.summary }}</p>
-
-        <h3>Key Points</h3>
-        <p>{{ meeting.key_points|linebreaks }}</p>
-
-        <h3>Action Items</h3>
-        <p>{{ meeting.action_items|linebreaks }}</p>
-
-        <h3>Decisions</h3>
-        <p>{{ meeting.decisions|linebreaks }}</p>
-    {% endif %}
+    </button>
+</form>
 
 
-    <!-- Meeting Information -->
+<!-- Meeting Description -->
+<p>{{ meeting.description }}</p>
+
+
+<!-- Meeting Tags -->
+{% if meeting.tags %}
     <p>
-        <strong>Created:</strong>
-        {{ meeting.created_at }}
+        <strong>🏷️ Tags:</strong>
+        {{ meeting.tags }}
     </p>
+{% endif %}
 
-    <p>
-        <strong>Last Updated:</strong>
-        {{ meeting.updated_at }}
-    </p>
 
+<!-- Meeting Audio -->
+{% if meeting.audio %}
+    <h3>Meeting Audio</h3>
+
+    <audio controls>
+        <source src="{{ meeting.audio.url }}">
+        Your browser does not support the audio player.
+    </audio>
+
+    <br><br>
+
+    <a href="{% url 'transcribe_meeting' meeting.id %}">
+        Transcribe Audio
+    </a>
+{% endif %}
+
+
+<!-- Transcript -->
+{% if meeting.transcript %}
+    <hr>
+
+    <h2>📝 Transcript</h2>
+
+    <p>{{ meeting.transcript }}</p>
 
     <br>
 
-    <a href="{% url 'edit_meeting' meeting.id %}">
-        Edit Meeting
+    <a href="{% url 'analyze_meeting' meeting.id %}">
+        <button type="button">
+            Analyze Meeting
+        </button>
     </a>
 
-    <br><br>
 
-    <a href="{% url 'delete_meeting' meeting.id %}">
-        Delete Meeting
-    </a>
+    <!-- Ask My Meeting -->
+    <hr>
 
-    <br><br>
+    <h2>💬 Ask My Meeting</h2>
 
-    <a href="{% url 'dashboard' %}">
-        ← Back to Dashboard
-    </a>
+    <form method="POST" action="{% url 'ask_meeting' meeting.id %}">
+        {% csrf_token %}
+
+        <input
+            type="text"
+            name="question"
+            placeholder="Ask something about this meeting..."
+            required
+        >
+
+        <button type="submit">
+            Ask
+        </button>
+    </form>
+
+
+    <!-- Conversation History -->
+    {% if meeting.chat_history %}
+
+        <h3>Conversation</h3>
+
+        {% for chat in meeting.chat_history %}
+
+            <p>
+                <strong>You:</strong>
+                {{ chat.question }}
+            </p>
+
+            <p>
+                <strong>AI:</strong>
+                {{ chat.answer|linebreaks }}
+            </p>
+
+            <hr>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endif %}
+
+
+<!-- AI Analysis -->
+{% if meeting.summary %}
+
+    <hr>
+
+    <h2>🤖 AI Meeting Analysis</h2>
+
+
+    <!-- Summary -->
+    <h3>Summary</h3>
+
+    <p>
+        {{ meeting.summary }}
+    </p>
+
+
+    <!-- Key Points -->
+    <h3>Key Points</h3>
+
+    <p>
+        {{ meeting.key_points|linebreaks }}
+    </p>
+
+
+    <!-- Structured Action Items -->
+    <h3>✅ Action Items</h3>
+
+    {% for action_item in meeting.structured_action_items.all %}
+
+        <div class="action-item {% if action_item.completed %}completed{% endif %}">
+
+            <form
+                method="POST"
+                action="{% url 'toggle_action_item' action_item.id %}"
+            >
+                {% csrf_token %}
+
+                <button type="submit">
+                    {% if action_item.completed %}
+                        ☑️
+                    {% else %}
+                        ☐
+                    {% endif %}
+                </button>
+            </form>
+
+            <span class="task">
+                {{ action_item.task }}
+            </span>
+
+            {% if action_item.assignee %}
+                <div class="meta">
+                    👤 Assigned to: {{ action_item.assignee }}
+                </div>
+            {% endif %}
+
+            {% if action_item.due_date %}
+                <div class="meta">
+                    📅 Due: {{ action_item.due_date }}
+                </div>
+            {% endif %}
+
+        </div>
+
+    {% empty %}
+
+        <p>No action items found.</p>
+
+    {% endfor %}
+
+
+    <!-- Raw AI Action Items -->
+    <details>
+
+        <summary>
+            View Raw AI Action Items
+        </summary>
+
+        <p>
+            {{ meeting.action_items|linebreaks }}
+        </p>
+
+    </details>
+
+
+    <!-- Decisions -->
+    <h3>Decisions</h3>
+
+    <p>
+        {{ meeting.decisions|linebreaks }}
+    </p>
+
+{% endif %}
+
+
+<!-- Meeting Information -->
+<hr>
+
+<h3>Meeting Information</h3>
+
+<p>
+    <strong>Created:</strong>
+    {{ meeting.created_at }}
+</p>
+
+<p>
+    <strong>Last Updated:</strong>
+    {{ meeting.updated_at }}
+</p>
+
+
+<br>
+
+
+<!-- Edit -->
+<a href="{% url 'edit_meeting' meeting.id %}">
+    Edit Meeting
+</a>
+
+
+<br><br>
+
+
+<!-- Delete -->
+<a href="{% url 'delete_meeting' meeting.id %}">
+    Delete Meeting
+</a>
+
+
+<br><br>
+
+
+<!-- Dashboard -->
+<a href="{% url 'dashboard' %}">
+    ← Back to Dashboard
+</a>
+```
 
 </body>
 </html>

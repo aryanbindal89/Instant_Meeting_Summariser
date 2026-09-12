@@ -3,25 +3,52 @@ from . import views
 
 urlpatterns = [
     path("create/", views.create_meeting, name="create_meeting"),
-    path("<int:meeting_id>/edit/", views.edit_meeting, name="edit_meeting"),
-    path("<int:meeting_id>/delete/", views.delete_meeting, name="delete_meeting"),
-    path("<int:meeting_id>/", views.meeting_detail, name="meeting_detail"),
+
     path(
-    "<int:meeting_id>/transcribe/",
-    views.transcribe_meeting,
-    name="transcribe_meeting"
-),
-path(
-    "<int:meeting_id>/analyze/",
-    views.analyze_meeting_view,
-    name="analyze_meeting"
-),
+        "<int:meeting_id>/edit/",
+        views.edit_meeting,
+        name="edit_meeting"
+    ),
 
-path("<int:meeting_id>/ask/", views.ask_meeting_view, name="ask_meeting"),
+    path(
+        "<int:meeting_id>/delete/",
+        views.delete_meeting,
+        name="delete_meeting"
+    ),
 
-path(
-    "<int:meeting_id>/toggle-important/",
-    views.toggle_important,
-    name="toggle_important"
-),
+    path(
+        "<int:meeting_id>/transcribe/",
+        views.transcribe_meeting,
+        name="transcribe_meeting"
+    ),
+
+    path(
+        "<int:meeting_id>/analyze/",
+        views.analyze_meeting_view,
+        name="analyze_meeting"
+    ),
+
+    path(
+        "<int:meeting_id>/ask/",
+        views.ask_meeting_view,
+        name="ask_meeting"
+    ),
+
+    path(
+        "<int:meeting_id>/toggle-important/",
+        views.toggle_important,
+        name="toggle_important"
+    ),
+
+    path(
+        "<int:action_item_id>/toggle-action/",
+        views.toggle_action_item,
+        name="toggle_action_item"
+    ),
+
+    path(
+        "<int:meeting_id>/",
+        views.meeting_detail,
+        name="meeting_detail"
+    ),
 ]
