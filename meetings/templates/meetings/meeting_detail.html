@@ -1,296 +1,768 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-<head>
-    <title>{{ meeting.title }}</title>
+{% block title %}
+{{ meeting.title }} | MeetMind
+{% endblock %}
 
-```
-<style>
-    .action-item {
-        margin: 10px 0;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-    }
+{% block content %}
 
-    .action-item.completed {
-        background-color: #f0f0f0;
-    }
+<section class="page">
 
-    .action-item.completed .task {
-        text-decoration: line-through;
-        color: #777;
-    }
+    <div class="container">
 
-    .action-item form {
-        display: inline;
-    }
+        <!-- =========================
+             MEETING HEADER
+        ========================== -->
 
-    .action-item button {
-        cursor: pointer;
-        margin-right: 10px;
-    }
+        <div class="page-header reveal">
 
-    .meta {
-        color: #666;
-        font-size: 14px;
-    }
-</style>
-```
+            <div>
 
-</head>
+                <div class="hero-badge">
+                    ✦ Meeting
+                </div>
 
-<body>
+                <h1>
+                    {{ meeting.title }}
+                </h1>
 
-```
-<h1>{{ meeting.title }}</h1>
+                {% if meeting.description %}
+                    <p>
+                        {{ meeting.description }}
+                    </p>
+                {% endif %}
 
+                <div
+                    style="
+                        display: flex;
+                        gap: 8px;
+                        flex-wrap: wrap;
+                        margin-top: 14px;
+                    "
+                >
 
-<!-- Important Meeting -->
-<form method="POST" action="{% url 'toggle_important' meeting.id %}">
-    {% csrf_token %}
-
-    <button type="submit">
-        {% if meeting.is_important %}
-            ⭐ Remove from Important
-        {% else %}
-            ☆ Mark as Important
-        {% endif %}
-    </button>
-</form>
-
-
-<!-- Meeting Description -->
-<p>{{ meeting.description }}</p>
-
-
-<!-- Meeting Tags -->
-{% if meeting.tags %}
-    <p>
-        <strong>🏷️ Tags:</strong>
-        {{ meeting.tags }}
-    </p>
-{% endif %}
-
-
-<!-- Meeting Audio -->
-{% if meeting.audio %}
-    <h3>Meeting Audio</h3>
-
-    <audio controls>
-        <source src="{{ meeting.audio.url }}">
-        Your browser does not support the audio player.
-    </audio>
-
-    <br><br>
-
-    <a href="{% url 'transcribe_meeting' meeting.id %}">
-        Transcribe Audio
-    </a>
-{% endif %}
-
-
-<!-- Transcript -->
-{% if meeting.transcript %}
-    <hr>
-
-    <h2>📝 Transcript</h2>
-
-    <p>{{ meeting.transcript }}</p>
-
-    <br>
-
-    <a href="{% url 'analyze_meeting' meeting.id %}">
-        <button type="button">
-            Analyze Meeting
-        </button>
-    </a>
-
-
-    <!-- Ask My Meeting -->
-    <hr>
-
-    <h2>💬 Ask My Meeting</h2>
-
-    <form method="POST" action="{% url 'ask_meeting' meeting.id %}">
-        {% csrf_token %}
-
-        <input
-            type="text"
-            name="question"
-            placeholder="Ask something about this meeting..."
-            required
-        >
-
-        <button type="submit">
-            Ask
-        </button>
-    </form>
-
-
-    <!-- Conversation History -->
-    {% if meeting.chat_history %}
-
-        <h3>Conversation</h3>
-
-        {% for chat in meeting.chat_history %}
-
-            <p>
-                <strong>You:</strong>
-                {{ chat.question }}
-            </p>
-
-            <p>
-                <strong>AI:</strong>
-                {{ chat.answer|linebreaks }}
-            </p>
-
-            <hr>
-
-        {% endfor %}
-
-    {% endif %}
-
-{% endif %}
-
-
-<!-- AI Analysis -->
-{% if meeting.summary %}
-
-    <hr>
-
-    <h2>🤖 AI Meeting Analysis</h2>
-
-
-    <!-- Summary -->
-    <h3>Summary</h3>
-
-    <p>
-        {{ meeting.summary }}
-    </p>
-
-
-    <!-- Key Points -->
-    <h3>Key Points</h3>
-
-    <p>
-        {{ meeting.key_points|linebreaks }}
-    </p>
-
-
-    <!-- Structured Action Items -->
-    <h3>✅ Action Items</h3>
-
-    {% for action_item in meeting.structured_action_items.all %}
-
-        <div class="action-item {% if action_item.completed %}completed{% endif %}">
-
-            <form
-                method="POST"
-                action="{% url 'toggle_action_item' action_item.id %}"
-            >
-                {% csrf_token %}
-
-                <button type="submit">
-                    {% if action_item.completed %}
-                        ☑️
-                    {% else %}
-                        ☐
+                    {% if meeting.is_important %}
+                        <span class="tag">
+                            ⭐ Important
+                        </span>
                     {% endif %}
-                </button>
-            </form>
 
-            <span class="task">
-                {{ action_item.task }}
-            </span>
+                    {% if meeting.audio %}
+                        <span class="tag">
+                            🎙️ Audio
+                        </span>
+                    {% endif %}
 
-            {% if action_item.assignee %}
-                <div class="meta">
-                    👤 Assigned to: {{ action_item.assignee }}
+                    {% if meeting.transcript %}
+                        <span class="tag">
+                            📝 Transcript
+                        </span>
+                    {% endif %}
+
+                    {% if meeting.summary %}
+                        <span class="tag">
+                            🧠 AI Analyzed
+                        </span>
+                    {% endif %}
+
                 </div>
-            {% endif %}
 
-            {% if action_item.due_date %}
-                <div class="meta">
-                    📅 Due: {{ action_item.due_date }}
-                </div>
-            {% endif %}
+                {% if meeting.tags %}
+                    <div
+                        style="
+                            display: flex;
+                            gap: 8px;
+                            flex-wrap: wrap;
+                            margin-top: 12px;
+                        "
+                    >
+                        <span class="tag">
+                            🏷️ {{ meeting.tags }}
+                        </span>
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- HEADER ACTIONS -->
+
+            <div
+                style="
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                "
+            >
+
+                <form
+                    method="POST"
+                    action="{% url 'toggle_important' meeting.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="btn btn-secondary"
+                    >
+
+                        {% if meeting.is_important %}
+                            ★ Unstar
+                        {% else %}
+                            ☆ Important
+                        {% endif %}
+
+                    </button>
+
+                </form>
+
+
+                <a
+                    href="{% url 'edit_meeting' meeting.id %}"
+                    class="btn btn-primary"
+                >
+                    Edit Meeting
+                </a>
+
+            </div>
 
         </div>
 
-    {% empty %}
 
-        <p>No action items found.</p>
+        <!-- =========================
+             AUDIO
+        ========================== -->
 
-    {% endfor %}
+        {% if meeting.audio %}
 
+            <div class="card reveal">
 
-    <!-- Raw AI Action Items -->
-    <details>
+                <div class="card-body">
 
-        <summary>
-            View Raw AI Action Items
-        </summary>
+                    <div class="ai-title">
 
-        <p>
-            {{ meeting.action_items|linebreaks }}
-        </p>
+                        <span class="ai-title-icon">
+                            🎙️
+                        </span>
 
-    </details>
+                        Meeting Recording
 
+                    </div>
 
-    <!-- Decisions -->
-    <h3>Decisions</h3>
-
-    <p>
-        {{ meeting.decisions|linebreaks }}
-    </p>
-
-{% endif %}
-
-
-<!-- Meeting Information -->
-<hr>
-
-<h3>Meeting Information</h3>
-
-<p>
-    <strong>Created:</strong>
-    {{ meeting.created_at }}
-</p>
-
-<p>
-    <strong>Last Updated:</strong>
-    {{ meeting.updated_at }}
-</p>
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            margin-top: 8px;
+                        "
+                    >
+                        Listen to the original meeting recording.
+                    </p>
 
 
-<br>
+                    <audio
+                        controls
+                        style="
+                            width: 100%;
+                            margin-top: 20px;
+                        "
+                    >
+
+                        <source
+                            src="{{ meeting.audio.url }}"
+                        >
+
+                        Your browser does not support
+                        audio playback.
+
+                    </audio>
 
 
-<!-- Edit -->
-<a href="{% url 'edit_meeting' meeting.id %}">
-    Edit Meeting
-</a>
+                    {% if not meeting.transcript %}
+
+                        <div style="margin-top: 20px;">
+
+                            <a
+                                href="{% url 'transcribe_meeting' meeting.id %}"
+                                class="btn btn-primary"
+                            >
+                                📝 Transcribe Meeting
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
 
 
-<br><br>
+        <!-- =========================
+             TRANSCRIPT
+        ========================== -->
+
+        {% if meeting.transcript %}
+
+            <div
+                class="card reveal"
+                style="margin-top: 20px;"
+            >
+
+                <div class="card-body">
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            gap: 15px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <div>
+
+                            <div class="ai-title">
+
+                                <span class="ai-title-icon">
+                                    📝
+                                </span>
+
+                                Transcript
+
+                            </div>
+
+                            <p
+                                style="
+                                    color: var(--text-muted);
+                                    margin-top: 8px;
+                                "
+                            >
+                                Your meeting's searchable transcript.
+                            </p>
+
+                        </div>
 
 
-<!-- Delete -->
-<a href="{% url 'delete_meeting' meeting.id %}">
-    Delete Meeting
-</a>
+                        {% if not meeting.summary %}
+
+                            <a
+                                href="{% url 'analyze_meeting' meeting.id %}"
+                                class="btn btn-primary"
+                            >
+                                🧠 Analyze Meeting
+                            </a>
+
+                        {% endif %}
+
+                    </div>
 
 
-<br><br>
+                    <div
+                        style="
+                            margin-top: 25px;
+                            padding: 20px;
+                            border-radius: 14px;
+                            background: var(--surface-2);
+                            border: 1px solid var(--border);
+                            white-space: pre-wrap;
+                            line-height: 1.8;
+                            color: var(--text);
+                        "
+                    >
+                        {{ meeting.transcript }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endif %}
 
 
-<!-- Dashboard -->
-<a href="{% url 'dashboard' %}">
-    ← Back to Dashboard
-</a>
-```
+        <!-- =========================
+             ASK MY MEETING
+        ========================== -->
 
-</body>
-</html>
+        {% if meeting.transcript %}
+
+            <div
+                class="card reveal"
+                style="margin-top: 20px;"
+            >
+
+                <div class="card-body">
+
+                    <div class="ai-title">
+
+                        <span class="ai-title-icon">
+                            💬
+                        </span>
+
+                        Ask My Meeting
+
+                    </div>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            margin-top: 8px;
+                        "
+                    >
+                        Ask questions about this meeting.
+                        Answers are generated using the transcript.
+                    </p>
+
+
+                    <form
+                        method="POST"
+                        action="{% url 'ask_meeting' meeting.id %}"
+                        style="margin-top: 22px;"
+                    >
+
+                        {% csrf_token %}
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 10px;
+                                align-items: stretch;
+                            "
+                        >
+
+                            <input
+                                type="text"
+                                name="question"
+                                class="form-control"
+                                placeholder="Ask something about this meeting..."
+                                required
+                            >
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Ask
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    {% if meeting.chat_history %}
+
+                        <div
+                            class="chat-box"
+                            style="margin-top: 25px;"
+                        >
+
+                            {% for chat in meeting.chat_history %}
+
+                                <div class="chat-message chat-user">
+
+                                    <strong>
+                                        You
+                                    </strong>
+
+                                    <p>
+                                        {{ chat.question }}
+                                    </p>
+
+                                </div>
+
+
+                                <div class="chat-message chat-ai">
+
+                                    <strong>
+                                        MeetMind AI
+                                    </strong>
+
+                                    <p>
+                                        {{ chat.answer }}
+                                    </p>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =========================
+             AI ANALYSIS
+        ========================== -->
+
+        {% if meeting.summary %}
+
+            <div
+                class="card reveal"
+                style="margin-top: 20px;"
+            >
+
+                <div class="card-body">
+
+                    <div class="ai-title">
+
+                        <span class="ai-title-icon">
+                            🧠
+                        </span>
+
+                        AI Meeting Intelligence
+
+                    </div>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            margin-top: 8px;
+                        "
+                    >
+                        AI-generated insights from your meeting.
+                    </p>
+
+
+                    <!-- SUMMARY -->
+
+                    <div
+                        class="ai-section"
+                        style="margin-top: 25px;"
+                    >
+
+                        <h3>
+                            ✨ Summary
+                        </h3>
+
+                        <p>
+                            {{ meeting.summary }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- KEY POINTS -->
+
+                    {% if meeting.key_points %}
+
+                        <div
+                            class="ai-section"
+                            style="margin-top: 20px;"
+                        >
+
+                            <h3>
+                                📌 Key Points
+                            </h3>
+
+                            <div
+                                style="white-space: pre-line;"
+                            >
+                                {{ meeting.key_points }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- ACTION ITEMS -->
+
+                    {% if meeting.action_items %}
+
+                        <div
+                            class="ai-section"
+                            style="margin-top: 20px;"
+                        >
+
+                            <h3>
+                                ✅ Action Items
+                            </h3>
+
+
+                            <div
+                                style="
+                                    display: grid;
+                                    gap: 10px;
+                                    margin-top: 15px;
+                                "
+                            >
+
+                                {% for action in meeting.structured_action_items.all %}
+
+                                    <div
+                                        style="
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 12px;
+                                            padding: 14px;
+                                            border: 1px solid var(--border);
+                                            border-radius: 12px;
+                                            background: var(--surface-2);
+                                        "
+                                    >
+
+                                        <!-- ACTION TOGGLE -->
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'toggle_action_item' action.id %}"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-secondary"
+                                                style="
+                                                    min-width: 44px;
+                                                    padding: 8px 10px;
+                                                "
+                                            >
+
+                                                {% if action.completed %}
+                                                    ✓
+                                                {% else %}
+                                                    ○
+                                                {% endif %}
+
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- ACTION CONTENT -->
+
+                                        <div
+                                            style="
+                                                flex: 1;
+                                            "
+                                        >
+
+                                            {% if action.completed %}
+
+                                                <div
+                                                    style="
+                                                        text-decoration: line-through;
+                                                        opacity: 0.55;
+                                                    "
+                                                >
+                                                    {{ action.task }}
+                                                </div>
+
+                                            {% else %}
+
+                                                <div>
+                                                    {{ action.task }}
+                                                </div>
+
+                                            {% endif %}
+
+
+                                            {% if action.assignee %}
+
+                                                <small
+                                                    style="
+                                                        color: var(--text-muted);
+                                                    "
+                                                >
+                                                    👤 {{ action.assignee }}
+                                                </small>
+
+                                            {% endif %}
+
+
+                                            {% if action.due_date %}
+
+                                                <small
+                                                    style="
+                                                        color: var(--text-muted);
+                                                        margin-left: 10px;
+                                                    "
+                                                >
+                                                    📅 {{ action.due_date }}
+                                                </small>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                {% empty %}
+
+                                    <div
+                                        style="
+                                            padding: 15px;
+                                            white-space: pre-line;
+                                        "
+                                    >
+                                        {{ meeting.action_items }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- DECISIONS -->
+
+                    {% if meeting.decisions %}
+
+                        <div
+                            class="ai-section"
+                            style="margin-top: 20px;"
+                        >
+
+                            <h3>
+                                🎯 Decisions
+                            </h3>
+
+                            <div
+                                style="white-space: pre-line;"
+                            >
+                                {{ meeting.decisions }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =========================
+             MEETING INFORMATION
+        ========================== -->
+
+        <div
+            class="card reveal"
+            style="margin-top: 20px;"
+        >
+
+            <div class="card-body">
+
+                <div class="ai-title">
+
+                    <span class="ai-title-icon">
+                        ℹ️
+                    </span>
+
+                    Meeting Information
+
+                </div>
+
+
+                <div
+                    class="grid grid-2"
+                    style="margin-top: 20px;"
+                >
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            📅
+                        </div>
+
+                        <div class="stat-label">
+                            Created
+                        </div>
+
+                        <div class="stat-value">
+                            {{ meeting.created_at|date:"M d, Y" }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            🔄
+                        </div>
+
+                        <div class="stat-label">
+                            Last Updated
+                        </div>
+
+                        <div class="stat-value">
+                            {{ meeting.updated_at|date:"M d, Y" }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             QUICK ACTIONS
+        ========================== -->
+
+        <div
+            class="hero-actions reveal"
+            style="
+                margin-top: 35px;
+                justify-content: space-between;
+            "
+        >
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="btn btn-secondary"
+            >
+                ← Back to Dashboard
+            </a>
+
+
+            <div
+                style="
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                "
+            >
+
+                <a
+                    href="{% url 'edit_meeting' meeting.id %}"
+                    class="btn btn-primary"
+                >
+                    Edit Meeting
+                </a>
+
+                <a
+                    href="{% url 'delete_meeting' meeting.id %}"
+                    class="btn btn-danger"
+                >
+                    Delete Meeting
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

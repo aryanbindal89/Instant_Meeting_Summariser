@@ -1,69 +1,450 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Meeting</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Create New Meeting</h1>
+{% block title %}
+Create Meeting | MeetMind
+{% endblock %}
 
-    <form method="POST" enctype="multipart/form-data">
+{% block content %}
 
-        {% csrf_token %}
+<section class="page">
 
-        <!-- Meeting Title -->
-        <input
-            type="text"
-            name="title"
-            placeholder="Meeting title"
-            required
-        >
+    <div class="container">
 
-        <br><br>
+        <!-- PAGE HEADER -->
 
-        <!-- Meeting Description -->
-        <textarea
-            name="description"
-            placeholder="Meeting description"
-            rows="5"
-        ></textarea>
+        <div class="page-header reveal">
 
-        <br><br>
+            <div>
 
-        <!-- Meeting Tags -->
-        <input
-            type="text"
-            name="tags"
-            placeholder="Tags (e.g. college, project, important)"
-        >
+                <div class="hero-badge">
+                    ✦ New Meeting
+                </div>
 
-        <br><br>
+                <h1>
+                    Create a
+                    <span class="gradient-text">
+                        new meeting.
+                    </span>
+                </h1>
 
-        <!-- Meeting Audio -->
-        <label for="audio">Meeting Audio:</label>
+                <p>
+                    Upload your meeting recording and let MeetMind
+                    turn it into useful insights.
+                </p>
 
-        <br>
+            </div>
 
-        <input
-            type="file"
-            name="audio"
-            id="audio"
-            accept="audio/*"
-        >
+            <a
+                href="{% url 'dashboard' %}"
+                class="btn btn-secondary"
+            >
+                ← Dashboard
+            </a>
 
-        <br><br>
+        </div>
 
-        <button type="submit">
-            Create Meeting
-        </button>
 
-    </form>
+        <!-- MAIN GRID -->
 
-    <br>
+        <div class="grid grid-2 reveal">
 
-    <a href="{% url 'dashboard' %}">
-        Back to Dashboard
-    </a>
+            <!-- FORM CARD -->
 
-</body>
-</html>
+            <div class="card">
+
+                <div class="card-body">
+
+                    <h2>
+                        Meeting Details
+                    </h2>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            margin-top: 8px;
+                            margin-bottom: 28px;
+                        "
+                    >
+                        Add the basic information for your meeting.
+                    </p>
+
+
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                        data-loading
+                    >
+
+                        {% csrf_token %}
+
+
+                        <!-- TITLE -->
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="title"
+                            >
+                                Meeting Title
+                            </label>
+
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                class="form-control"
+                                placeholder="e.g. Weekly Team Meeting"
+                                maxlength="200"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="description"
+                            >
+                                Description
+                            </label>
+
+                            <textarea
+                                id="description"
+                                name="description"
+                                class="form-control"
+                                rows="5"
+                                placeholder="What was this meeting about?"
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- TAGS -->
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="tags"
+                            >
+                                Tags
+                            </label>
+
+                            <input
+                                type="text"
+                                id="tags"
+                                name="tags"
+                                class="form-control"
+                                placeholder="e.g. project, team, planning"
+                                maxlength="300"
+                            >
+
+                            <small
+                                style="
+                                    display: block;
+                                    color: var(--text-muted);
+                                    margin-top: 8px;
+                                "
+                            >
+                                Add a few keywords to help organize your meetings.
+                            </small>
+
+                        </div>
+
+
+                        <!-- AUDIO -->
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="audio"
+                            >
+                                Meeting Audio
+                            </label>
+
+                            <input
+                                type="file"
+                                id="audio"
+                                name="audio"
+                                class="form-control"
+                                accept="audio/*"
+                            >
+
+                            <small
+                                style="
+                                    display: block;
+                                    color: var(--text-muted);
+                                    margin-top: 8px;
+                                "
+                            >
+                                Upload an audio recording of your meeting.
+                            </small>
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 12px;
+                                flex-wrap: wrap;
+                                margin-top: 28px;
+                            "
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Create Meeting
+                                <span>→</span>
+                            </button>
+
+                            <a
+                                href="{% url 'dashboard' %}"
+                                class="btn btn-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- INFORMATION CARD -->
+
+            <div>
+
+                <!-- AI PIPELINE -->
+
+                <div class="card reveal">
+
+                    <div class="card-body">
+
+                        <div class="hero-badge">
+                            ✦ AI Pipeline
+                        </div>
+
+                        <h2 style="margin-top: 18px;">
+                            What happens
+                            <span class="gradient-text">
+                                next?
+                            </span>
+                        </h2>
+
+                        <p
+                            style="
+                                color: var(--text-muted);
+                                line-height: 1.7;
+                                margin-top: 12px;
+                            "
+                        >
+                            Once your meeting is created,
+                            you can process it through the MeetMind
+                            AI pipeline.
+                        </p>
+
+
+                        <!-- STEP 1 -->
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 15px;
+                                margin-top: 28px;
+                            "
+                        >
+
+                            <div class="stat-icon">
+                                🎙️
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    1. Upload
+                                </h3>
+
+                                <p
+                                    style="
+                                        color: var(--text-muted);
+                                        line-height: 1.6;
+                                        margin-top: 5px;
+                                    "
+                                >
+                                    Store your meeting recording
+                                    securely with the meeting.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STEP 2 -->
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 15px;
+                                margin-top: 24px;
+                            "
+                        >
+
+                            <div class="stat-icon">
+                                📝
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    2. Transcribe
+                                </h3>
+
+                                <p
+                                    style="
+                                        color: var(--text-muted);
+                                        line-height: 1.6;
+                                        margin-top: 5px;
+                                    "
+                                >
+                                    Convert the audio into a searchable
+                                    meeting transcript using AI.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STEP 3 -->
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 15px;
+                                margin-top: 24px;
+                            "
+                        >
+
+                            <div class="stat-icon">
+                                🧠
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    3. Analyze
+                                </h3>
+
+                                <p
+                                    style="
+                                        color: var(--text-muted);
+                                        line-height: 1.6;
+                                        margin-top: 5px;
+                                    "
+                                >
+                                    Generate summaries, key points,
+                                    decisions and action items.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STEP 4 -->
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 15px;
+                                margin-top: 24px;
+                            "
+                        >
+
+                            <div class="stat-icon">
+                                💬
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    4. Ask
+                                </h3>
+
+                                <p
+                                    style="
+                                        color: var(--text-muted);
+                                        line-height: 1.6;
+                                        margin-top: 5px;
+                                    "
+                                >
+                                    Ask questions about the meeting
+                                    and get answers from its transcript.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TIP CARD -->
+
+                <div
+                    class="card reveal"
+                    style="margin-top: 20px;"
+                >
+
+                    <div class="card-body">
+
+                        <div class="stat-icon">
+                            💡
+                        </div>
+
+                        <h3 style="margin-top: 16px;">
+                            Pro tip
+                        </h3>
+
+                        <p
+                            style="
+                                color: var(--text-muted);
+                                line-height: 1.7;
+                                margin-top: 8px;
+                            "
+                        >
+                            Give your meeting a clear title and useful
+                            tags. This makes your meeting library much
+                            easier to navigate later.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

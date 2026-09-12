@@ -1,229 +1,426 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
+{% block title %}
+MeetMind | Dashboard
+{% endblock %}
 
-    <h1>Welcome, {{ request.user.username }}</h1>
+{% block content %}
+
+<section class="page">
+
+
+<div class="container">
+
+    <!-- Dashboard Header -->
+    <div class="page-header reveal">
+
+        <div>
+            <div class="hero-badge">
+                ✦ Meeting Intelligence
+            </div>
+
+            <h1>
+                Welcome back,
+                <span class="gradient-text">
+                    {{ request.user.username }}
+                </span>
+            </h1>
+
+            <p>
+                Manage your meetings, transcripts and AI insights
+                from one place.
+            </p>
+        </div>
+
+        <div>
+            <a
+                href="{% url 'create_meeting' %}"
+                class="btn btn-primary"
+            >
+                ＋ New Meeting
+            </a>
+        </div>
+
+    </div>
+
 
     <!-- Dashboard Navigation -->
-    <p>
-        <a href="{% url 'dashboard' %}">
-            📋 All Meetings
+    <div class="card reveal" style="margin-bottom: 28px;">
+
+        <div
+            class="card-body"
+            style="
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                align-items: center;
+            "
+        >
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="btn btn-secondary"
+            >
+                📋 All Meetings
+            </a>
+
+            <a
+                href="{% url 'important_meetings' %}"
+                class="btn btn-secondary"
+            >
+                ⭐ Important Meetings
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Meeting Overview -->
+    <div class="page-header reveal">
+
+        <div>
+            <h2>Meeting Overview</h2>
+
+            <p>
+                A quick look at your meeting workspace.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="grid grid-4 reveal">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📋
+            </div>
+
+            <div class="stat-value">
+                {{ total_meetings }}
+            </div>
+
+            <div class="stat-label">
+                Total Meetings
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🎵
+            </div>
+
+            <div class="stat-value">
+                {{ meetings_with_audio }}
+            </div>
+
+            <div class="stat-label">
+                Audio Uploaded
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📝
+            </div>
+
+            <div class="stat-value">
+                {{ meetings_with_transcript }}
+            </div>
+
+            <div class="stat-label">
+                Transcripts
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🧠
+            </div>
+
+            <div class="stat-value">
+                {{ meetings_with_analysis }}
+            </div>
+
+            <div class="stat-label">
+                AI Analysed
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Meetings Section -->
+    <div
+        class="page-header reveal"
+        style="margin-top: 55px;"
+    >
+
+        <div>
+            <h2>
+                My Meetings
+            </h2>
+
+            <p>
+                Your recent meetings and AI-powered insights.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'create_meeting' %}"
+            class="btn btn-primary"
+        >
+            ＋ Create Meeting
         </a>
-        |
-        <a href="{% url 'important_meetings' %}">
-            ⭐ Important Meetings
-        </a>
-    </p>
 
-    <hr>
+    </div>
 
-    <h2>Meeting Overview</h2>
-
-    <p>
-        <strong>Total Meetings:</strong>
-        {{ total_meetings }}
-    </p>
-
-    <p>
-        <strong>Meetings with Audio:</strong>
-        {{ meetings_with_audio }}
-    </p>
-
-    <p>
-        <strong>Meetings with Transcript:</strong>
-        {{ meetings_with_transcript }}
-    </p>
-
-    <p>
-        <strong>Meetings with AI Analysis:</strong>
-        {{ meetings_with_analysis }}
-    </p>
-
-    <hr>
-
-    <h2>My Meetings</h2>
-
-    <a href="{% url 'create_meeting' %}">
-        ➕ Create New Meeting
-    </a>
-
-    <br><br>
 
     {% if meetings %}
 
-        {% for meeting in meetings %}
+        <div class="grid grid-2">
 
-            <div>
+            {% for meeting in meetings %}
 
-                <h3>
-                    <a href="{% url 'meeting_detail' meeting.id %}">
-                        {{ meeting.title }}
-                    </a>
+                <article
+                    class="card meeting-card card-hover reveal"
+                >
 
-                    {% if meeting.is_important %}
-                        ⭐
-                    {% endif %}
-                </h3>
+                    <div class="card-body">
 
-                <p>
-                    {{ meeting.description }}
-                </p>
+                        <!-- Meeting Header -->
+                        <div class="meeting-card-header">
 
-                <p>
-                    Created: {{ meeting.created_at }}
-                </p>
+                            <div>
 
-                {% if meeting.audio %}
-                    <p>🎵 Audio uploaded</p>
-                {% endif %}
+                                <h3>
 
-                {% if meeting.transcript %}
-                    <p>📝 Transcript available</p>
-                {% endif %}
+                                    <a
+                                        href="{% url 'meeting_detail' meeting.id %}"
+                                        style="
+                                            color: inherit;
+                                            text-decoration: none;
+                                        "
+                                    >
+                                        {{ meeting.title }}
+                                    </a>
 
-                {% if meeting.summary %}
-                    <p>🧠 AI analysis available</p>
-                {% endif %}
+                                    {% if meeting.is_important %}
+                                        <span
+                                            title="Important meeting"
+                                            style="margin-left: 6px;"
+                                        >
+                                            ⭐
+                                        </span>
+                                    {% endif %}
 
-            </div>
+                                </h3>
 
-            <hr>
+                            </div>
 
-        {% endfor %}
+                            <span class="meeting-meta">
+                                {{ meeting.created_at|date:"d M Y" }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- Description -->
+                        {% if meeting.description %}
+
+                            <p
+                                style="
+                                    color: var(--text-muted);
+                                    margin: 14px 0;
+                                    line-height: 1.7;
+                                "
+                            >
+                                {{ meeting.description|truncatechars:150 }}
+                            </p>
+
+                        {% else %}
+
+                            <p
+                                style="
+                                    color: var(--text-muted);
+                                    margin: 14px 0;
+                                "
+                            >
+                                No description added for this meeting.
+                            </p>
+
+                        {% endif %}
+
+
+                        <!-- Tags -->
+                        {% if meeting.tags %}
+
+                            <div
+                                style="
+                                    display: flex;
+                                    gap: 8px;
+                                    flex-wrap: wrap;
+                                    margin: 16px 0;
+                                "
+                            >
+
+                                {% for tag in meeting.tags.split|slice:":6" %}
+
+                                    <span class="tag">
+                                        🏷️ {{ tag }}
+                                    </span>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Meeting Status -->
+                        <div
+                            style="
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 8px;
+                                margin-top: 18px;
+                            "
+                        >
+
+                            {% if meeting.audio %}
+
+                                <span class="tag">
+                                    🎵 Audio
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if meeting.transcript %}
+
+                                <span class="tag">
+                                    📝 Transcript
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if meeting.summary %}
+
+                                <span class="tag">
+                                    🧠 AI Analysis
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if not meeting.audio and not meeting.transcript and not meeting.summary %}
+
+                                <span class="tag">
+                                    ⏳ Not processed
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Card Footer -->
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                gap: 12px;
+                                flex-wrap: wrap;
+                                margin-top: 24px;
+                                padding-top: 18px;
+                                border-top: 1px solid var(--border);
+                            "
+                        >
+
+                            <span class="meeting-meta">
+                                Created {{ meeting.created_at|date:"d M Y, h:i A" }}
+                            </span>
+
+                            <a
+                                href="{% url 'meeting_detail' meeting.id %}"
+                                class="btn btn-secondary"
+                            >
+                                Open Meeting →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
 
     {% else %}
 
-        <p>No meetings found.</p>
+        <!-- Empty State -->
+        <div
+            class="card reveal"
+            style="text-align: center; padding: 70px 25px;"
+        >
 
-    {% endif %}
-
-    <br>
-
-    <a href="{% url 'logout' %}">
-        🚪 Logout
-    </a>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
-
-    <h1>Welcome, {{ request.user.username }}</h1>
-
-    <!-- Dashboard Navigation -->
-    <p>
-        <a href="{% url 'dashboard' %}">
-            📋 All Meetings
-        </a>
-        |
-        <a href="{% url 'important_meetings' %}">
-            ⭐ Important Meetings
-        </a>
-    </p>
-
-    <hr>
-
-    <h2>Meeting Overview</h2>
-
-    <p>
-        <strong>Total Meetings:</strong>
-        {{ total_meetings }}
-    </p>
-
-    <p>
-        <strong>Meetings with Audio:</strong>
-        {{ meetings_with_audio }}
-    </p>
-
-    <p>
-        <strong>Meetings with Transcript:</strong>
-        {{ meetings_with_transcript }}
-    </p>
-
-    <p>
-        <strong>Meetings with AI Analysis:</strong>
-        {{ meetings_with_analysis }}
-    </p>
-
-    <hr>
-
-    <h2>My Meetings</h2>
-
-    <a href="{% url 'create_meeting' %}">
-        ➕ Create New Meeting
-    </a>
-
-    <br><br>
-
-    {% if meetings %}
-
-        {% for meeting in meetings %}
-
-            <div>
-
-                <h3>
-                    <a href="{% url 'meeting_detail' meeting.id %}">
-                        {{ meeting.title }}
-                    </a>
-
-                    {% if meeting.is_important %}
-                        ⭐
-                    {% endif %}
-                </h3>
-
-                <p>
-                    {{ meeting.description }}
-                </p>
-
-                <!-- Meeting Tags -->
-                {% if meeting.tags %}
-                    <p>
-                        <strong>🏷️ Tags:</strong>
-                        {{ meeting.tags }}
-                    </p>
-                {% endif %}
-
-                <p>
-                    Created: {{ meeting.created_at }}
-                </p>
-
-                {% if meeting.audio %}
-                    <p>🎵 Audio uploaded</p>
-                {% endif %}
-
-                {% if meeting.transcript %}
-                    <p>📝 Transcript available</p>
-                {% endif %}
-
-                {% if meeting.summary %}
-                    <p>🧠 AI analysis available</p>
-                {% endif %}
-
+            <div
+                style="
+                    font-size: 52px;
+                    margin-bottom: 18px;
+                "
+            >
+                🎙️
             </div>
 
-            <hr>
+            <h2>
+                No meetings yet
+            </h2>
 
-        {% endfor %}
+            <p
+                style="
+                    color: var(--text-muted);
+                    max-width: 500px;
+                    margin: 12px auto 25px;
+                    line-height: 1.7;
+                "
+            >
+                Your meeting workspace is waiting.
+                Create your first meeting and let AI handle
+                the transcription, summaries and insights.
+            </p>
 
-    {% else %}
+            <a
+                href="{% url 'create_meeting' %}"
+                class="btn btn-primary"
+            >
+                ＋ Create Your First Meeting
+            </a>
 
-        <p>No meetings found.</p>
+        </div>
 
     {% endif %}
 
-    <br>
+</div>
+```
 
-    <a href="{% url 'logout' %}">
-        🚪 Logout
-    </a>
+</section>
 
-</body>
-</html>
+{% endblock %}

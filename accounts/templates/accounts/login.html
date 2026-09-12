@@ -1,44 +1,166 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login | Instant Meeting Summariser</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Login</h1>
+{% block title %}
+Login | MeetMind
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+```
+<div class="glow glow-one"></div>
+<div class="glow glow-two"></div>
+
+<div class="auth-card card reveal">
+
+    <div class="auth-header">
+
+        <div class="logo-icon" style="margin: 0 auto 18px;">
+            ✦
+        </div>
+
+        <div class="hero-badge">
+            ✦ Welcome Back
+        </div>
+
+        <h1>
+            Welcome back to
+            <span class="gradient-text">
+                MeetMind
+            </span>
+        </h1>
+
+        <p>
+            Sign in to access your meetings,
+            transcripts and AI-powered insights.
+        </p>
+
+    </div>
 
     {% if error %}
-        <p>{{ error }}</p>
+        <div class="alert alert-error" data-auto-dismiss>
+            {{ error }}
+        </div>
     {% endif %}
 
-    <form method="POST">
+    <form
+        method="POST"
+        data-loading
+    >
+
         {% csrf_token %}
 
-        <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            required
+        <div class="form-group">
+
+            <label
+                for="username"
+                class="form-label"
+            >
+                Username
+            </label>
+
+            <input
+                id="username"
+                type="text"
+                name="username"
+                class="form-control"
+                placeholder="Enter your username"
+                autocomplete="username"
+                required
+                autofocus
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+                for="password"
+                class="form-label"
+            >
+                Password
+            </label>
+
+            <div style="position: relative;">
+
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                    style="padding-right: 52px;"
+                >
+
+                <button
+                    type="button"
+                    data-password-toggle
+                    aria-label="Show password"
+                    style="
+                        position: absolute;
+                        right: 14px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        background: none;
+                        border: none;
+                        color: var(--text-muted);
+                        cursor: pointer;
+                        font-size: 18px;
+                        padding: 5px;
+                    "
+                >
+                    👁
+                </button>
+
+            </div>
+
+        </div>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+            style="
+                width: 100%;
+                justify-content: center;
+                margin-top: 8px;
+            "
         >
+            Login
+            <span>→</span>
+        </button>
 
-        <br><br>
-
-        <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-        >
-
-        <br><br>
-
-        <button type="submit">Login</button>
     </form>
 
-    <p>
+    <div class="divider">
+        <span>or</span>
+    </div>
+
+    <p
+        style="
+            text-align: center;
+            color: var(--text-muted);
+            margin: 0;
+        "
+    >
         Don't have an account?
-        <a href="{% url 'register' %}">Create one</a>
+        <a
+            href="{% url 'register' %}"
+            style="
+                color: var(--primary);
+                font-weight: 600;
+                text-decoration: none;
+            "
+        >
+            Create one
+        </a>
     </p>
 
-</body>
-</html>
+</div>
+```
+
+</section>
+
+{% endblock %}

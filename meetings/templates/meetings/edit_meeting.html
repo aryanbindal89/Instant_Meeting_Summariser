@@ -1,88 +1,644 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Meeting</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Edit Meeting</h1>
+{% block title %}
+Edit {{ meeting.title }} | MeetMind
+{% endblock %}
 
-    <form method="POST" enctype="multipart/form-data">
+{% block content %}
 
-        {% csrf_token %}
+<section class="page">
 
-        <!-- Meeting Title -->
-        <input
-            type="text"
-            name="title"
-            value="{{ meeting.title }}"
-            placeholder="Meeting title"
-            required
+```
+<div class="container">
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header reveal">
+
+        <div>
+
+            <div class="hero-badge">
+                ✦ Meeting Settings
+            </div>
+
+            <h1>
+                Edit Meeting
+            </h1>
+
+            <p>
+                Update your meeting details and recording.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'meeting_detail' meeting.id %}"
+            class="btn btn-secondary"
         >
+            ← Back to Meeting
+        </a>
 
-        <br><br>
+    </div>
 
-        <!-- Meeting Description -->
-        <textarea
-            name="description"
-            rows="5"
-            placeholder="Meeting description"
-        >{{ meeting.description }}</textarea>
 
-        <br><br>
+    <!-- MAIN CONTENT -->
 
-        <!-- Meeting Tags -->
-        <label for="tags">Meeting Tags:</label>
+    <div class="grid grid-2 reveal">
 
-        <br>
+        <!-- EDIT FORM -->
 
-        <input
-            type="text"
-            name="tags"
-            id="tags"
-            value="{{ meeting.tags }}"
-            placeholder="e.g. college, project, client"
+        <div class="card">
+
+            <div class="card-body">
+
+                <div class="ai-title">
+
+                    <span class="ai-title-icon">
+                        ✏️
+                    </span>
+
+                    Meeting Details
+
+                </div>
+
+                <p
+                    style="
+                        color: var(--text-muted);
+                        margin-top: 8px;
+                    "
+                >
+                    Update the information for this meeting.
+                </p>
+
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    data-loading
+                    style="margin-top: 25px;"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- TITLE -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="title"
+                            class="form-label"
+                        >
+                            Meeting Title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            class="form-control"
+                            value="{{ meeting.title }}"
+                            placeholder="Enter meeting title"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="description"
+                            class="form-label"
+                        >
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            class="form-control"
+                            rows="5"
+                            placeholder="Describe this meeting..."
+                        >{{ meeting.description }}</textarea>
+
+                    </div>
+
+
+                    <!-- TAGS -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="tags"
+                            class="form-label"
+                        >
+                            Tags
+                        </label>
+
+                        <input
+                            type="text"
+                            id="tags"
+                            name="tags"
+                            class="form-control"
+                            value="{{ meeting.tags }}"
+                            placeholder="e.g. project, client, planning"
+                        >
+
+                        <small
+                            style="
+                                display: block;
+                                margin-top: 7px;
+                                color: var(--text-muted);
+                            "
+                        >
+                            Separate multiple tags with commas.
+                        </small>
+
+                    </div>
+
+
+                    <!-- CURRENT AUDIO -->
+
+                    {% if meeting.audio %}
+
+                        <div
+                            class="form-group"
+                            style="margin-top: 25px;"
+                        >
+
+                            <label class="form-label">
+                                Current Recording
+                            </label>
+
+                            <audio
+                                controls
+                                style="
+                                    width: 100%;
+                                    margin-top: 8px;
+                                "
+                            >
+
+                                <source
+                                    src="{{ meeting.audio.url }}"
+                                >
+
+                                Your browser does not support
+                                audio playback.
+
+                            </audio>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- IMPORTANT MEETING -->
+
+<div class="form-group">
+
+```
+<label class="form-label">
+    Meeting Priority
+</label>
+
+<label
+    style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface-2);
+    "
+>
+
+    <input
+        type="checkbox"
+        name="is_important"
+        value="true"
+        {% if meeting.is_important %}checked{% endif %}
+        style="
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        "
+    >
+
+    <span>
+        ⭐ Mark this meeting as important
+    </span>
+
+</label>
+```
+
+</div>
+
+
+                    <!-- REPLACE AUDIO -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="audio"
+                            class="form-label"
+                        >
+                            {% if meeting.audio %}
+                                Replace Recording
+                            {% else %}
+                                Upload Recording
+                            {% endif %}
+                        </label>
+
+                        <input
+                            type="file"
+                            id="audio"
+                            name="audio"
+                            class="form-control"
+                            accept="audio/*"
+                        >
+
+                        <small
+                            style="
+                                display: block;
+                                margin-top: 7px;
+                                color: var(--text-muted);
+                            "
+                        >
+                            Leave this empty to keep the current recording.
+                        </small>
+
+                    </div>
+
+
+                    <!-- BUTTONS -->
+
+                    <div
+                        style="
+                            display: flex;
+                            gap: 10px;
+                            flex-wrap: wrap;
+                            margin-top: 30px;
+                        "
+                    >
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            💾 Save Changes
+                        </button>
+
+                        <a
+                            href="{% url 'meeting_detail' meeting.id %}"
+                            class="btn btn-secondary"
+                        >
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- SIDE PANEL -->
+
+        <div>
+
+            <!-- AI PIPELINE -->
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="ai-title">
+
+                        <span class="ai-title-icon">
+                            🧠
+                        </span>
+
+                        AI Meeting Pipeline
+
+                    </div>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        MeetMind turns your meeting recording
+                        into structured and searchable intelligence.
+                    </p>
+
+
+                    <div
+                        style="
+                            display: grid;
+                            gap: 14px;
+                            margin-top: 25px;
+                        "
+                    >
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                🎙️
+                            </div>
+
+                            <div>
+
+                                <div class="stat-value">
+                                    01
+                                </div>
+
+                                <div class="stat-label">
+                                    Upload meeting audio
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                📝
+                            </div>
+
+                            <div>
+
+                                <div class="stat-value">
+                                    02
+                                </div>
+
+                                <div class="stat-label">
+                                    Generate transcript
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                ✨
+                            </div>
+
+                            <div>
+
+                                <div class="stat-value">
+                                    03
+                                </div>
+
+                                <div class="stat-label">
+                                    Analyze with AI
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                💬
+                            </div>
+
+                            <div>
+
+                                <div class="stat-value">
+                                    04
+                                </div>
+
+                                <div class="stat-label">
+                                    Ask questions about the meeting
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CURRENT STATUS -->
+
+            <div
+                class="card reveal"
+                style="margin-top: 20px;"
+            >
+
+                <div class="card-body">
+
+                    <div class="ai-title">
+
+                        <span class="ai-title-icon">
+                            📊
+                        </span>
+
+                        Current Status
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display: grid;
+                            gap: 12px;
+                            margin-top: 20px;
+                        "
+                    >
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                gap: 10px;
+                            "
+                        >
+
+                            <span>
+                                Audio
+                            </span>
+
+                            {% if meeting.audio %}
+
+                                <span class="tag">
+                                    ✓ Available
+                                </span>
+
+                            {% else %}
+
+                                <span class="tag">
+                                    Not uploaded
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                gap: 10px;
+                            "
+                        >
+
+                            <span>
+                                Transcript
+                            </span>
+
+                            {% if meeting.transcript %}
+
+                                <span class="tag">
+                                    ✓ Ready
+                                </span>
+
+                            {% else %}
+
+                                <span class="tag">
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                gap: 10px;
+                            "
+                        >
+
+                            <span>
+                                AI Analysis
+                            </span>
+
+                            {% if meeting.summary %}
+
+                                <span class="tag">
+                                    ✓ Ready
+                                </span>
+
+                            {% else %}
+
+                                <span class="tag">
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DANGER ZONE -->
+
+            <div
+                class="card reveal"
+                style="
+                    margin-top: 20px;
+                    border-color: rgba(239, 68, 68, 0.3);
+                "
+            >
+
+                <div class="card-body">
+
+                    <div class="ai-title">
+
+                        <span class="ai-title-icon">
+                            ⚠️
+                        </span>
+
+                        Danger Zone
+
+                    </div>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        Deleting this meeting will permanently
+                        remove its recording, transcript and
+                        AI-generated insights.
+                    </p>
+
+                    <div style="margin-top: 20px;">
+
+                        <a
+                            href="{% url 'delete_meeting' meeting.id %}"
+                            class="btn btn-danger"
+                        >
+                            Delete Meeting
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER ACTIONS -->
+
+    <div
+        class="hero-actions reveal"
+        style="
+            margin-top: 35px;
+            justify-content: flex-start;
+        "
+    >
+
+        <a
+            href="{% url 'meeting_detail' meeting.id %}"
+            class="btn btn-secondary"
         >
+            ← Back to Meeting
+        </a>
 
-        <br><br>
+    </div>
 
-        <!-- Current Audio -->
-        {% if meeting.audio %}
-            <h3>Current Audio</h3>
+</div>
+```
 
-            <audio controls>
-                <source src="{{ meeting.audio.url }}">
-                Your browser does not support the audio player.
-            </audio>
+</section>
 
-            <br><br>
-        {% endif %}
-
-        <!-- Replace Audio -->
-        <label for="audio">Replace Meeting Audio:</label>
-
-        <br>
-
-        <input
-            type="file"
-            name="audio"
-            id="audio"
-            accept="audio/*"
-        >
-
-        <br><br>
-
-        <button type="submit">
-            Save Changes
-        </button>
-
-    </form>
-
-    <br>
-
-    <a href="{% url 'meeting_detail' meeting.id %}">
-        Cancel
-    </a>
-
-</body>
-</html>
+{% endblock %}

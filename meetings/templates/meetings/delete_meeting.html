@@ -1,30 +1,147 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Delete Meeting</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Delete Meeting</h1>
+{% block title %}
+Delete Meeting | MeetMind
+{% endblock %}
 
-    <p>
-        Are you sure you want to delete
-        <strong>{{ meeting.title }}</strong>?
+{% block content %}
+
+<section class="auth-page">
+
+```
+<div class="glow glow-one"></div>
+<div class="glow glow-two"></div>
+
+<div
+    class="auth-card card reveal"
+    style="text-align: center;"
+>
+
+    <div
+        style="
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 24px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        "
+    >
+        🗑️
+    </div>
+
+    <div class="hero-badge">
+        ⚠️ Permanent Action
+    </div>
+
+    <h1 style="margin-top: 18px;">
+        Delete this
+        <span class="gradient-text">
+            meeting?
+        </span>
+    </h1>
+
+    <p
+        style="
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin: 15px auto;
+            max-width: 500px;
+        "
+    >
+        You're about to permanently delete
+        <strong style="color: var(--text);">
+            {{ meeting.title }}
+        </strong>.
+        This action cannot be undone.
     </p>
 
+    <div
+        class="card"
+        style="
+            margin: 28px 0;
+            text-align: left;
+            background: rgba(239, 68, 68, 0.05);
+            border-color: rgba(239, 68, 68, 0.18);
+        "
+    >
+
+        <div class="card-body">
+
+            <strong>
+                What will be deleted?
+            </strong>
+
+            <ul
+                style="
+                    color: var(--text-muted);
+                    line-height: 2;
+                    margin: 12px 0 0;
+                    padding-left: 20px;
+                "
+            >
+                <li>Meeting details</li>
+                <li>Uploaded audio</li>
+                <li>Transcript</li>
+                <li>AI analysis and insights</li>
+                <li>Meeting action items</li>
+                <li>Ask My Meeting conversation history</li>
+            </ul>
+
+        </div>
+
+    </div>
+
     <form method="POST">
+
         {% csrf_token %}
 
-        <button type="submit">
-            Yes, Delete Meeting
-        </button>
+        <div
+            style="
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+            "
+        >
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+                data-confirm="Are you sure you want to permanently delete this meeting?"
+            >
+                Yes, Delete Meeting
+            </button>
+
+            <a
+                href="{% url 'meeting_detail' meeting.id %}"
+                class="btn btn-secondary"
+            >
+                Keep Meeting
+            </a>
+
+        </div>
+
     </form>
 
-    <br>
+    <p
+        style="
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 22px;
+        "
+    >
+        You can cancel safely by choosing
+        <strong>Keep Meeting</strong>.
+    </p>
 
-    <a href="{% url 'meeting_detail' meeting.id %}">
-        Cancel
-    </a>
+</div>
+```
 
-</body>
-</html>
+</section>
+
+{% endblock %}

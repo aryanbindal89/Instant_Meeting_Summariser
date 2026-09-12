@@ -1,0 +1,493 @@
+{% extends "base.html" %}
+
+{% block title %}
+MeetMind | AI Meeting Intelligence
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================
+     HERO SECTION
+========================= -->
+
+<section class="hero">
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
+
+    <div class="container">
+
+        <div class="hero-content reveal">
+
+            <div class="hero-badge">
+                ✦ AI-Powered Meeting Intelligence
+            </div>
+
+            <h1>
+                Turn every meeting into
+                <span class="gradient-text">
+                    actionable intelligence.
+                </span>
+            </h1>
+
+            <p>
+                Record, transcribe, summarize and understand
+                your meetings with the power of AI.
+                Stop searching through conversations.
+                Start getting the answers you need.
+            </p>
+
+            <div class="hero-actions">
+
+                {% if user.is_authenticated %}
+
+                    <a
+                        href="{% url 'dashboard' %}"
+                        class="btn btn-primary"
+                    >
+                        Open Dashboard
+                        <span>→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'create_meeting' %}"
+                        class="btn btn-secondary"
+                    >
+                        New Meeting
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'register' %}"
+                        class="btn btn-primary"
+                    >
+                        Get Started
+                        <span>→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="btn btn-secondary"
+                    >
+                        Login
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- HERO FEATURE CARDS -->
+
+        <div
+            class="grid grid-3 reveal"
+            style="margin-top: 70px;"
+        >
+
+            <div class="card card-hover">
+
+                <div class="card-body">
+
+                    <div
+                        class="stat-icon"
+                        style="margin-bottom: 18px;"
+                    >
+                        🎙️
+                    </div>
+
+                    <h3>
+                        Capture Meetings
+                    </h3>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        Upload your meeting audio and
+                        keep everything organized in one place.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card card-hover">
+
+                <div class="card-body">
+
+                    <div
+                        class="stat-icon"
+                        style="margin-bottom: 18px;"
+                    >
+                        🧠
+                    </div>
+
+                    <h3>
+                        AI-Powered Insights
+                    </h3>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        Get summaries, key points,
+                        decisions and action items automatically.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card card-hover">
+
+                <div class="card-body">
+
+                    <div
+                        class="stat-icon"
+                        style="margin-bottom: 18px;"
+                    >
+                        💬
+                    </div>
+
+                    <h3>
+                        Ask Your Meeting
+                    </h3>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        Ask questions about your meeting
+                        and get answers grounded in its transcript.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================
+     FEATURES SECTION
+========================= -->
+
+<section class="page">
+
+    <div class="container">
+
+        <div
+            class="page-header reveal"
+            style="
+                text-align: center;
+                justify-content: center;
+            "
+        >
+
+            <div style="max-width: 700px;">
+
+                <div class="hero-badge">
+                    ✦ Built For Better Meetings
+                </div>
+
+                <h2>
+                    Everything you need
+                    <span class="gradient-text">
+                        after the meeting.
+                    </span>
+                </h2>
+
+                <p
+                    style="
+                        color: var(--text-muted);
+                        line-height: 1.7;
+                        margin-top: 14px;
+                    "
+                >
+                    MeetMind transforms your meeting recordings
+                    into searchable, structured and actionable knowledge.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid grid-3 reveal">
+
+            <!-- FEATURE 1 -->
+
+            <div class="card card-hover">
+
+                <div class="card-body">
+
+                    <div class="stat-icon">
+                        📝
+                    </div>
+
+                    <h3>
+                        Automatic Transcription
+                    </h3>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        Convert your meeting audio into a readable
+                        transcript using AI.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FEATURE 2 -->
+
+            <div class="card card-hover">
+
+                <div class="card-body">
+
+                    <div class="stat-icon">
+                        ✨
+                    </div>
+
+                    <h3>
+                        Meeting Intelligence
+                    </h3>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        Extract summaries, important points,
+                        decisions and action items automatically.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FEATURE 3 -->
+
+            <div class="card card-hover">
+
+                <div class="card-body">
+
+                    <div class="stat-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        Ask Your Meetings
+                    </h3>
+
+                    <p
+                        style="
+                            color: var(--text-muted);
+                            line-height: 1.7;
+                            margin-top: 10px;
+                        "
+                    >
+                        Ask questions and get answers directly
+                        from your meeting transcript.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PRODUCT SHOWCASE
+        ========================= -->
+
+        <div
+            class="card reveal"
+            style="
+                margin-top: 70px;
+                overflow: hidden;
+            "
+        >
+
+            <div class="card-body">
+
+                <div
+                    class="grid grid-2"
+                    style="align-items: center;"
+                >
+
+                    <div>
+
+                        <div class="hero-badge">
+                            ✦ Your Meetings, Upgraded
+                        </div>
+
+                        <h2 style="margin-top: 18px;">
+                            Don't just remember
+                            <span class="gradient-text">
+                                what happened.
+                            </span>
+                        </h2>
+
+                        <p
+                            style="
+                                color: var(--text-muted);
+                                line-height: 1.8;
+                                margin-top: 15px;
+                            "
+                        >
+                            Understand what was discussed,
+                            what was decided, and what needs
+                            to happen next.
+                        </p>
+
+                    </div>
+
+
+                    <!-- MINI STATS -->
+
+                    <div class="grid grid-2">
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                🎧
+                            </div>
+
+                            <div class="stat-value">
+                                Audio
+                            </div>
+
+                            <div class="stat-label">
+                                Meeting recordings
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                🧠
+                            </div>
+
+                            <div class="stat-value">
+                                AI
+                            </div>
+
+                            <div class="stat-label">
+                                Intelligent analysis
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                ✅
+                            </div>
+
+                            <div class="stat-value">
+                                Actions
+                            </div>
+
+                            <div class="stat-label">
+                                Track what comes next
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                💬
+                            </div>
+
+                            <div class="stat-value">
+                                Ask
+                            </div>
+
+                            <div class="stat-label">
+                                Query your meetings
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CTA
+        ========================= -->
+
+        <div
+            class="hero-actions reveal"
+            style="
+                justify-content: center;
+                margin-top: 70px;
+            "
+        >
+
+            {% if user.is_authenticated %}
+
+                <a
+                    href="{% url 'create_meeting' %}"
+                    class="btn btn-primary"
+                >
+                    Create a Meeting
+                    <span>→</span>
+                </a>
+
+            {% else %}
+
+                <a
+                    href="{% url 'register' %}"
+                    class="btn btn-primary"
+                >
+                    Start Using MeetMind
+                    <span>→</span>
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
